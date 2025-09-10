@@ -1,7 +1,7 @@
 {
-  "name": "working-capital-command-center",
+  "name": "forex-deal-analyzer",
   "version": "1.0.0",
-  "description": "A diagnostic tool for working capital.",
+  "description": "A secure server for the Forex Deal Analyzer application.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -10,3 +10,4 @@
     "express": "^4.19.2"
   }
 }
+
