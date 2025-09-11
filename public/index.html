@@ -32,6 +32,7 @@
         }
         .btn-primary { background-color: var(--color-primary); color: white; }
         .btn-primary:hover { background-color: var(--color-primary-hover); }
+        .btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
         .card {
             background-color: var(--bg-card);
             border-radius: 0.75rem;
@@ -109,7 +110,6 @@
             visibility: visible;
             opacity: 1;
         }
-        /* MODIFIED: Added styles for the new AI Chatbot */
         .chat-message {
             display: flex; margin-bottom: 0.5rem;
         }
@@ -140,7 +140,7 @@
         <div class="max-w-5xl mx-auto">
             <div class="text-center">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-[var(--color-text-header)] tracking-tight">Make Smarter Forex Decisions</h2>
-                <p class="mt-4 max-w-3xl mx-auto text-lg">Analyze international deals, simulate currency risk, and review past performance to protect your profits.</p>
+                <p class="mt-4 max-w-3xl mx-auto text-lg">Analyze international deals with user-defined interest rates for customized forward calculations.</p>
             </div>
             
             <div class="mt-8 p-1.5 bg-slate-200 rounded-lg flex space-x-2 max-w-sm mx-auto mode-toggle">
@@ -148,6 +148,7 @@
                 <button id="mode-analyzer" class="flex-1 text-center py-2 px-4 rounded-md font-semibold">Performance Analyzer</button>
             </div>
 
+            <!-- Deal Simulator -->
             <div id="simulator-view">
                 <div class="card mt-8 p-6">
                     <h3 class="text-xl font-bold text-[var(--color-text-header)] mb-6">Live Market Rates</h3>
@@ -158,7 +159,7 @@
                         <div class="p-4 bg-slate-50 rounded-lg">
                              <p class="text-sm font-semibold tooltip">Rates Updated At (IST)
                                 <span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
-                                <span class="tooltip-text">Rates are fetched from a live data source when the page loads. This shows the time of the latest update in Indian Standard Time.</span>
+                                <span class="tooltip-text">Spot rates are fetched from a live data source when the page loads.</span>
                             </p>
                             <p class="text-2xl font-bold text-[var(--color-primary)]" id="rate-last-updated">...</p>
                         </div>
@@ -189,28 +190,37 @@
                          <div>
                             <label id="sim-cost-label" for="sim-cost" class="font-semibold text-sm tooltip">Cost of Goods (LCY)<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
                             <span id="sim-cost-tooltip" class="tooltip-text">This is your total cost in local currency. It's subtracted from your forex realization to calculate your final profit.</span></label>
-                            <input type="number" id="sim-cost" class="input-field mt-1" value="7500000">
+                            <input type="number" id="sim-cost" class="input-field mt-1" value="8200000">
                         </div>
                         <div>
                             <label for="sim-date" class="font-semibold text-sm">Expected Payment Date</label>
                             <input type="date" id="sim-date" class="input-field mt-1">
                         </div>
-                         <div class="md:col-span-2">
-                             <button id="sim-analyze-btn" class="w-full h-full btn-primary font-bold py-2.5 px-4 rounded-lg text-lg">Analyze Deal</button>
+                        <div>
+                            <label for="sim-local-rate" class="font-semibold text-sm tooltip">Local Interest Rate (%)<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
+                            <span class="tooltip-text">Enter the annualized interest rate for your local currency (e.g., 6.5 for 6.5%).</span></label>
+                            <input type="number" id="sim-local-rate" class="input-field mt-1" value="6.5">
+                        </div>
+                        <div>
+                            <label for="sim-foreign-rate" class="font-semibold text-sm tooltip">Foreign Interest Rate (%)<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
+                            <span class="tooltip-text">Enter the annualized interest rate for the foreign currency (e.g., 5.5 for 5.5%).</span></label>
+                            <input type="number" id="sim-foreign-rate" class="input-field mt-1" value="5.5">
+                        </div>
+                         <div class="lg:col-span-4 md:col-span-2">
+                             <button id="sim-analyze-btn" class="w-full btn-primary font-bold py-2.5 px-4 rounded-lg text-lg">Analyze Deal</button>
                          </div>
                     </div>
                 </div>
 
+                <!-- Outputs -->
                 <div id="sim-results-view" class="hidden mt-8">
                     <div class="card p-6 mb-8">
                         <h3 class="text-xl font-bold text-[var(--color-text-header)] mb-4">Calculation Assumptions</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                             <div class="p-4 bg-slate-50 rounded-lg"><p class="text-sm font-semibold">Live Spot Rate</p><p class="text-2xl font-bold text-[var(--color-text-header)]" id="calc-spot-rate"></p></div>
-                            <div class="p-4 bg-slate-50 rounded-lg"><p class="text-sm font-semibold tooltip">Local Interest Rate<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
-                            <span class="tooltip-text">An assumed central bank policy rate for the local currency. This is used to calculate the forward rate based on interest rate parity theory.</span></p><p class="text-2xl font-bold text-[var(--color-text-header)]" id="calc-local-rate"></p></div>
-                            <div class="p-4 bg-slate-50 rounded-lg"><p class="text-sm font-semibold tooltip">Foreign Interest Rate<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
-                            <span class="tooltip-text">An assumed central bank policy rate for the foreign currency, used for the forward rate calculation.</span></p><p class="text-2xl font-bold text-[var(--color-text-header)]" id="calc-foreign-rate"></p></div>
-                             <div class="p-4 bg-slate-50 rounded-lg"><p class="text-sm font-semibold">Time Period (Years)</p><p class="text-2xl font-bold text-[var(--color-text-header)]" id="calc-time"></p></div>
+                            <div class="p-4 bg-slate-50 rounded-lg"><p class="text-sm font-semibold">Local Interest Rate</p><p class="text-2xl font-bold text-[var(--color-text-header)]" id="calc-local-rate"></p></div>
+                            <div class="p-4 bg-slate-50 rounded-lg"><p class="text-sm font-semibold">Foreign Interest Rate</p><p class="text-2xl font-bold text-[var(--color-text-header)]" id="calc-foreign-rate"></p></div>
+                             <div class="p-4 bg-slate-50 rounded-lg"><p class="text-sm font-semibold">Deal Tenor (Days)</p><p class="text-2xl font-bold text-[var(--color-text-header)]" id="calc-days"></p></div>
                         </div>
                     </div>
                      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -239,7 +249,7 @@
                          </div>
                      </div>
                      <div class="card mt-8 p-6">
-                         <button id="sim-ai-btn" class="w-full btn-secondary text-lg font-bold py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+                         <button id="sim-ai-btn" class="w-full btn-secondary text-lg font-bold py-3 px-4 rounded-lg flex items-center justify-center space-x-2" disabled>
                             <span>✨ Get AI Treasury Insight</span>
                          </button>
                          <div id="sim-ai-result" class="mt-4 bg-blue-50 p-4 rounded-lg text-blue-900 hidden"></div>
@@ -248,7 +258,7 @@
                         <h3 class="text-xl font-bold text-[var(--color-text-header)] mb-4">🤖 AI Forex Advisor</h3>
                         <div id="chatbot-container" class="space-y-4">
                             <div id="chat-history" class="h-64 overflow-y-auto bg-slate-50 p-3 rounded-lg border flex flex-col space-y-2">
-                                <div class="chat-message bot"><p>Hello! Once you analyze a deal, you can ask me questions about it here.</p></div>
+                                <div class="chat-message bot"><p>Hello! AI features are initializing...</p></div>
                             </div>
                             <div class="flex space-x-2">
                                 <input type="text" id="chatbot-input" class="input-field flex-grow" placeholder="Ask about this deal..." disabled>
@@ -259,14 +269,15 @@
                 </div>
             </div>
 
-            <div id="analyzer-view" class="hidden">
+            <!-- Performance Analyzer -->
+             <div id="analyzer-view" class="hidden">
                  <div class="card mt-8 p-6">
                     <h3 class="text-xl font-bold text-[var(--color-text-header)] mb-6">Step 1: Enter Your Completed Deal Details</h3>
-                    <p class="text-sm text-slate-500 mb-4">Note: The Transaction Amount, Currencies, and Cost are taken from the Deal Simulator section above.</p>
+                    <p class="text-sm text-slate-500 mb-4">Note: Transaction details and interest rates are taken from the Deal Simulator section.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div>
                             <label for="analyzer-deal-date" class="font-semibold text-sm tooltip">PO / Contract Date<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
-                            <span class="tooltip-text">The date you signed the deal or received the Purchase Order. This is the baseline date for measuring your forex risk and calculating the available forward rate.</span></label>
+                            <span class="tooltip-text">The date you signed the deal. This is the baseline for calculating the actual forward rate that was available to you.</span></label>
                             <input type="date" id="analyzer-deal-date" class="input-field mt-1">
                         </div>
                         <div>
@@ -275,7 +286,7 @@
                         </div>
                         <div>
                             <label for="analyzer-actual-rate" class="font-semibold text-sm tooltip">Settlement Spot Rate<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span>
-                            <span class="tooltip-text">The final exchange rate you received from your bank. This field will auto-populate with the historical spot rate when you select a Payment Date.</span></label>
+                            <span class="tooltip-text">The final exchange rate you received. This will auto-populate with the historical spot rate when you select a Payment Date.</span></label>
                             <input type="number" id="analyzer-actual-rate" class="input-field mt-1" placeholder="e.g., 83.10">
                         </div>
                         <div class="lg:col-span-3">
@@ -295,9 +306,9 @@
                              </div>
                          </div>
                          <div class="card p-6">
-                            <h3 class="text-xl font-bold text-[var(--color-text-header)] mb-4">Hypothetical Hedged Outcome</h3>
+                            <h3 class="text-xl font-bold text-[var(--color-text-header)] mb-4">Calculated Hedged Outcome</h3>
                              <div class="space-y-3">
-                                 <div class="flex justify-between items-center"><span>Forward Rate Available:</span><span id="analyzer-forward-rate" class="font-bold text-lg"></span></div>
+                                 <div class="flex justify-between items-center font-semibold"><span class="tooltip">Forward Rate on PO Date<span class="tooltip-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM9 9a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 9 9Zm1.5-3a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0v-.5Z" clip-rule="evenodd" /></svg></span><span class="tooltip-text">The calculated forward rate based on the spot rate and your inputted interest rates on the PO/Contract Date.</span></span><span id="analyzer-forward-rate" class="font-bold text-lg"></span></div>
                                  <hr>
                                  <div class="flex justify-between items-center"><span>Guaranteed Realization:</span><span id="analyzer-hedged-realization" class="font-bold text-lg"></span></div>
                                  <div class="flex justify-between items-center"><span>Less: Costs:</span><span id="analyzer-hedged-costs" class="font-bold text-lg"></span></div>
@@ -311,7 +322,7 @@
                         <p id="analyzer-bottom-line" class="text-3xl font-extrabold"></p>
                     </div>
                      <div class="card mt-8 p-6">
-                         <button id="analyzer-ai-btn" class="w-full btn-secondary text-lg font-bold py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+                         <button id="analyzer-ai-btn" class="w-full btn-secondary text-lg font-bold py-3 px-4 rounded-lg flex items-center justify-center space-x-2" disabled>
                             <span>✨ Get AI Performance Review</span>
                          </button>
                          <div id="analyzer-ai-result" class="mt-4 bg-blue-50 p-4 rounded-lg text-blue-900 hidden"></div>
@@ -326,45 +337,60 @@
     <script>
         // --- SCRIPT START ---
         
-        // MODIFIED: This key should be stored securely on a server and fetched via a dedicated API endpoint.
-        // For demonstration purposes, you could paste a key here, but it is NOT recommended for production.
-        let GEMINI_API_KEY = ''; 
+        let geminiApiKey = '';
         const state = { mode: 'sim' };
 
-        // MODIFIED: These are simplified, illustrative rates. Real-world forward calculations use yield curves.
-        const interestRates = {
-            INR: 0.0650, // Repo Rate (illustrative)
-            USD: 0.0550, // Fed Funds Rate (illustrative)
-            EUR: 0.0450, // ECB Rate (illustrative)
-            GBP: 0.0525, // BoE Rate (illustrative)
-        };
-        
-        // MODIFIED: A single promise to fetch the API key once.
-        const apiKeyPromise = fetchApiKey();
-
-        // MODIFIED: Explain that this function requires a backend server to work securely.
+        // --- MODIFIED: API Key Handling for Production Environments ---
         async function fetchApiKey() {
-            // This function assumes you have a backend endpoint '/api/get-key' that securely provides the API key.
-            // This prevents exposing your key in the client-side code.
             try {
-                // In a real application, you would uncomment the following lines.
-                // const response = await fetch('/api/get-key'); 
-                // if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                // const data = await response.json();
-                // if (data.apiKey) {
-                //     GEMINI_API_KEY = data.apiKey;
-                // } else { console.error('API key not found in server response.'); }
-                console.log("API Key fetch skipped. Add a key manually or create a server endpoint.");
+                // This relative path '/api/get-key' assumes your frontend is served from the same domain as your backend.
+                // On Render, if you have a web service and a static site, this should work correctly.
+                // Your backend server must have an endpoint at this path that does one thing:
+                // It reads the GEMINI_API_KEY from its environment variables and returns it in a JSON object.
+                // Example Node.js/Express server endpoint:
+                // app.get('/api/get-key', (req, res) => {
+                //   res.json({ apiKey: process.env.GEMINI_API_KEY });
+                // });
+                const response = await fetch('/api/get-key');
+                if (!response.ok) {
+                    throw new Error(`API key endpoint returned status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.apiKey) {
+                    geminiApiKey = data.apiKey;
+                    console.log("Successfully fetched and set Gemini API Key.");
+                    enableAiFeatures(true);
+                } else {
+                    console.error('API key not found in the response from /api/get-key.');
+                    enableAiFeatures(false);
+                }
             } catch (error) {
-                console.error('Error fetching API key:', error);
+                console.error('Failed to fetch API key from backend. Make sure your /api/get-key endpoint is set up correctly.', error);
+                enableAiFeatures(false);
             }
         }
-        
+
+        // Helper to enable/disable all AI-related buttons and update UI text
+        function enableAiFeatures(isEnabled) {
+            document.getElementById('sim-ai-btn').disabled = !isEnabled;
+            document.getElementById('analyzer-ai-btn').disabled = !isEnabled;
+            document.getElementById('chatbot-input').disabled = !isEnabled;
+            document.getElementById('chatbot-send-btn').disabled = !isEnabled;
+
+            const chatBotMessage = document.querySelector('#chat-history .bot p');
+            if (isEnabled) {
+                chatBotMessage.textContent = 'Hello! AI features are enabled. Analyze a deal to begin.';
+            } else {
+                chatBotMessage.textContent = 'AI features are disabled. Could not fetch API key from the server.';
+            }
+        }
+
         async function callGeminiAPI(systemPrompt, userPrompt) {
-            await apiKeyPromise;
-            if (!GEMINI_API_KEY) return "Error: API Key is not configured. Please add your Gemini API key in the script to enable AI features.";
+            if (!geminiApiKey) {
+                return "Error: API Key is not configured on the server. Please ensure the /api/get-key endpoint is working.";
+            }
             
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`;
             const payload = {
                 contents: [{ parts: [{ text: userPrompt }] }],
                 systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -378,41 +404,33 @@
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(`API call failed with status: ${response.status}. Details: ${JSON.stringify(errorData)}`);
+                    throw new Error(`API call failed with status: ${response.status}. Details: ${JSON.stringify(errorData.error.message)}`);
                 }
                 const result = await response.json();
-                // MODIFIED: Safer check for response structure
                 if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
                     return result.candidates[0].content.parts[0].text;
                 } else { throw new Error("Invalid response structure from API."); }
             } catch (error) {
                 console.error("API call failed:", error);
-                return "Error: Unable to generate AI insight at this time. Check the console for more details.";
+                return `Error: Unable to generate AI insight. Please check the console for details. (Is your API key correct and enabled for this domain?)`;
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Mode Toggles
+            fetchApiKey(); // Attempt to fetch the API key as soon as the page loads.
+
             document.getElementById('mode-sim').addEventListener('click', () => setMode('sim'));
             document.getElementById('mode-analyzer').addEventListener('click', () => setMode('analyzer'));
-
-            // Simulator Listeners
             document.getElementById('sim-deal-type').addEventListener('change', updateCostLabel);
             document.getElementById('sim-analyze-btn').addEventListener('click', runSimulator);
             document.getElementById('sim-future-spot').addEventListener('input', updateSimulatedProfit);
             document.getElementById('sim-ai-btn').addEventListener('click', getSimAIInsight);
-
-            // Analyzer Listeners
             document.getElementById('analyzer-analyze-btn').addEventListener('click', runAnalyzer);
             document.getElementById('analyzer-ai-btn').addEventListener('click', getAnalyzerAIInsight);
-            // MODIFIED: Added event listener for auto-population of settlement rate
             document.getElementById('analyzer-payment-date').addEventListener('change', autoPopulateSettlementRate);
-
-            // MODIFIED: AI Chatbot Listeners
             document.getElementById('chatbot-send-btn').addEventListener('click', handleChatbotQuery);
             document.getElementById('chatbot-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChatbotQuery(); });
 
-            // Set default dates
             const today = new Date();
             const futureDate = new Date();
             futureDate.setDate(today.getDate() + 90);
@@ -423,7 +441,7 @@
             document.getElementById('analyzer-payment-date').value = today.toISOString().split('T')[0];
             
             updateLiveRates();
-            autoPopulateSettlementRate(); // Populate rate for default date on load
+            autoPopulateSettlementRate();
         });
         
         function updateCostLabel(){
@@ -455,14 +473,12 @@
             }
         }
         
-        // MODIFIED: Switched to an API that supports historical dates and is more reliable.
         async function getExchangeRate(date = 'latest', base = 'USD', target = 'INR') {
             const url = `https://api.frankfurter.app/${date}?from=${base}&to=${target}`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`Network response was not ok for date ${date}`);
-                const data = await response.json();
-                return data; 
+                return await response.json(); 
             } catch (error) {
                 console.error("Could not fetch exchange rate:", error);
                 return null;
@@ -481,7 +497,6 @@
             document.getElementById('rate-last-updated').textContent = updateTime.toLocaleTimeString('en-IN', {timeZone: 'Asia/Kolkata', hour12: true, hour: 'numeric', minute:'2-digit'});
         }
 
-        // MODIFIED: New function to auto-populate historical settlement rate.
         async function autoPopulateSettlementRate() {
             const paymentDate = document.getElementById('analyzer-payment-date').value;
             const fcy = document.getElementById('sim-fcy').value;
@@ -503,20 +518,28 @@
             rateInput.disabled = false;
         }
 
+        function calculateForwardRate(spotRate, localRateDecimal, foreignRateDecimal, days) {
+            const timeToExpiry = days / 365.0;
+            return spotRate * (1 + localRateDecimal * timeToExpiry) / (1 + foreignRateDecimal * timeToExpiry);
+        }
 
         async function runSimulator() {
             const btn = document.getElementById('sim-analyze-btn');
-            const originalBtnText = btn.textContent;
             btn.innerHTML = `<div class="loader mx-auto"></div>`;
             btn.disabled = true;
 
             const fcy = document.getElementById('sim-fcy').value;
             const lcy = document.getElementById('sim-lcy').value;
             
+            const localRatePercent = parseFloat(document.getElementById('sim-local-rate').value);
+            const foreignRatePercent = parseFloat(document.getElementById('sim-foreign-rate').value);
+            const localRateDecimal = localRatePercent / 100.0;
+            const foreignRateDecimal = foreignRatePercent / 100.0;
+            
             const rateData = await getExchangeRate('latest', fcy, lcy);
-            if (!rateData || !rateData.rates || !rateData.rates[lcy]) {
-                alert("Could not fetch the latest exchange rate. Please try again.");
-                btn.textContent = originalBtnText;
+            if (!rateData || !rateData.rates || !rateData.rates[lcy] || isNaN(localRateDecimal) || isNaN(foreignRateDecimal)) {
+                alert("Could not fetch the latest exchange rate or interest rates are invalid. Please try again.");
+                btn.textContent = "Analyze Deal";
                 btn.disabled = false;
                 return;
             }
@@ -524,14 +547,11 @@
             const paymentDate = new Date(document.getElementById('sim-date').value);
             const today = new Date();
             const timeDiff = paymentDate.getTime() - today.getTime();
-            const daysDiff = Math.max(0, timeDiff / (1000 * 3600 * 24));
-            const timeToExpiry = daysDiff / 365;
+            const daysDiff = Math.max(0, Math.round(timeDiff / (1000 * 3600 * 24)));
 
             const spotRate = rateData.rates[lcy];
-            const localRate = interestRates[lcy];
-            const foreignRate = interestRates[fcy];
-            const forwardRate = spotRate * (1 + localRate * timeToExpiry) / (1 + foreignRate * timeToExpiry);
-
+            const forwardRate = calculateForwardRate(spotRate, localRateDecimal, foreignRateDecimal, daysDiff);
+            
             state.sim = {
                 dealType: document.getElementById('sim-deal-type').value,
                 amount: parseFloat(document.getElementById('sim-amount').value),
@@ -540,16 +560,17 @@
                 cost: parseFloat(document.getElementById('sim-cost').value),
                 spotRate: spotRate,
                 forwardRate: forwardRate,
-                paymentDate: document.getElementById('sim-date').value
+                paymentDate: document.getElementById('sim-date').value,
+                days: daysDiff
             };
             
             const s = state.sim;
             const formatCurrency = (num) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: s.lcy }).format(num);
             
             document.getElementById('calc-spot-rate').textContent = s.spotRate.toFixed(4);
-            document.getElementById('calc-local-rate').textContent = `${(localRate * 100).toFixed(2)}%`;
-            document.getElementById('calc-foreign-rate').textContent = `${(foreignRate * 100).toFixed(2)}%`;
-            document.getElementById('calc-time').textContent = timeToExpiry.toFixed(2);
+            document.getElementById('calc-local-rate').textContent = `${localRatePercent.toFixed(2)}%`;
+            document.getElementById('calc-foreign-rate').textContent = `${foreignRatePercent.toFixed(2)}%`;
+            document.getElementById('calc-days').textContent = s.days;
 
             const hedgedRealization = s.amount * s.forwardRate;
             const hedgedProfit = hedgedRealization - s.cost;
@@ -567,11 +588,8 @@
             updateSimulatedProfit();
             
             document.getElementById('sim-results-view').classList.remove('hidden');
-            // MODIFIED: Enable chatbot after analysis
-            document.getElementById('chatbot-input').disabled = false;
-            document.getElementById('chatbot-send-btn').disabled = false;
             
-            btn.textContent = originalBtnText;
+            btn.textContent = "Analyze Deal";
             btn.disabled = false;
         }
 
@@ -600,7 +618,6 @@
         
         async function getSimAIInsight() {
             const btn = document.getElementById('sim-ai-btn');
-            const originalBtnHTML = btn.innerHTML;
             btn.innerHTML = `<div class="loader mx-auto"></div>`;
             btn.disabled = true;
 
@@ -614,19 +631,19 @@
             const userPrompt = `I have a ${s.dealType} deal of ${s.fcy} ${s.amount.toLocaleString()} with a cost of ${s.lcy} ${s.cost.toLocaleString()}. The current spot rate is ${s.spotRate.toFixed(4)}, the calculated forward rate is ${s.forwardRate.toFixed(4)}, giving a guaranteed profit of ${s.lcy} ${(s.amount * s.forwardRate - s.cost).toLocaleString()}. I am simulating a future spot rate of ${futureSpot}, which results in a profit of ${s.lcy} ${(s.amount * futureSpot - s.cost).toLocaleString()}. Please analyze.`;
 
             const insight = await callGeminiAPI(systemPrompt, userPrompt);
-            // NOTE: Using .innerHTML is a security risk if the API response is not trusted.
-            // For this controlled use case, it's acceptable for rendering simple formatting.
             resultDiv.innerHTML = insight.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
             resultDiv.classList.remove('hidden');
-            btn.innerHTML = originalBtnHTML;
+            btn.innerHTML = `✨ Get AI Treasury Insight`;
             btn.disabled = false;
         }
 
         async function runAnalyzer() {
              const btn = document.getElementById('analyzer-analyze-btn');
-             const originalBtnText = btn.textContent;
              btn.innerHTML = `<div class="loader mx-auto"></div>`;
              btn.disabled = true;
+             
+             const localRateDecimal = parseFloat(document.getElementById('sim-local-rate').value) / 100.0;
+             const foreignRateDecimal = parseFloat(document.getElementById('sim-foreign-rate').value) / 100.0;
              
              state.analyzer = {
                 amount: parseFloat(document.getElementById('sim-amount').value),
@@ -638,9 +655,9 @@
                 actualRate: parseFloat(document.getElementById('analyzer-actual-rate').value)
              };
              const a = state.analyzer;
-             if (!a.dealDate || !a.paymentDate || isNaN(a.actualRate) || isNaN(a.amount) || isNaN(a.cost)) {
-                 alert("Please fill in all details for the past deal, including amount and cost from the simulator section.");
-                 btn.textContent = originalBtnText;
+             if (!a.dealDate || !a.paymentDate || isNaN(a.actualRate) || isNaN(a.amount) || isNaN(a.cost) || isNaN(localRateDecimal) || isNaN(foreignRateDecimal)) {
+                 alert("Please fill in all details for the past deal, including amount, cost, and interest rates.");
+                 btn.textContent = "Analyze Past Performance";
                  btn.disabled = false;
                  return;
              }
@@ -648,7 +665,7 @@
              const histData = await getExchangeRate(a.dealDate, a.fcy, a.lcy); 
              if (!histData || !histData.rates || !histData.rates[a.lcy]) {
                  alert("Could not fetch historical exchange rate data for the selected PO/Contract date.");
-                 btn.textContent = originalBtnText;
+                 btn.textContent = "Analyze Past Performance";
                  btn.disabled = false;
                  return;
              }
@@ -657,12 +674,9 @@
              const d1 = new Date(a.dealDate);
              const d2 = new Date(a.paymentDate);
              const timeDiff = d2.getTime() - d1.getTime();
-             const daysDiff = Math.max(0, timeDiff / (1000 * 3600 * 24));
-             const timeToExpiry = daysDiff / 365;
+             const daysDiff = Math.max(0, Math.round(timeDiff / (1000 * 3600 * 24)));
 
-             const localRate = interestRates[a.lcy];
-             const foreignRate = interestRates[a.fcy];
-             a.dealDateForwardRate = a.dealDateSpotRate * (1 + localRate * timeToExpiry) / (1 + foreignRate * timeToExpiry);
+             a.dealDateForwardRate = calculateForwardRate(a.dealDateSpotRate, localRateDecimal, foreignRateDecimal, daysDiff);
              
              const formatCurrency = (num) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: a.lcy }).format(num);
 
@@ -688,13 +702,12 @@
              }
 
              document.getElementById('analyzer-results-view').classList.remove('hidden');
-             btn.textContent = originalBtnText;
+             btn.textContent = "Analyze Past Performance";
              btn.disabled = false;
         }
 
         async function getAnalyzerAIInsight() {
              const btn = document.getElementById('analyzer-ai-btn');
-             const originalBtnHTML = btn.innerHTML;
              btn.innerHTML = `<div class="loader mx-auto"></div>`;
              btn.disabled = true;
 
@@ -708,11 +721,10 @@
              const insight = await callGeminiAPI(systemPrompt, userPrompt);
              resultDiv.innerHTML = insight.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
              resultDiv.classList.remove('hidden');
-             btn.innerHTML = originalBtnHTML;
+             btn.innerHTML = `✨ Get AI Performance Review`;
              btn.disabled = false;
         }
 
-        // MODIFIED: New functions for the AI Chatbot
         async function handleChatbotQuery() {
             const input = document.getElementById('chatbot-input');
             const query = input.value.trim();
@@ -720,7 +732,6 @@
 
             const chatHistory = document.getElementById('chat-history');
             
-            // Display user message
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'chat-message user';
             userMsgDiv.innerHTML = `<p>${query}</p>`;
@@ -728,10 +739,9 @@
             input.value = '';
             chatHistory.scrollTop = chatHistory.scrollHeight;
 
-            // Display thinking indicator
             const botThinkingDiv = document.createElement('div');
             botThinkingDiv.className = 'chat-message bot';
-            botThinkingDiv.innerHTML = `<p><span class="loader-dots">...</span></p>`;
+            botThinkingDiv.innerHTML = `<p><span class="loader"></span></p>`;
             chatHistory.appendChild(botThinkingDiv);
             chatHistory.scrollTop = chatHistory.scrollHeight;
 
@@ -756,7 +766,6 @@
 
             const response = await callGeminiAPI(systemPrompt, userPrompt);
 
-            // Replace thinking indicator with actual response
             botThinkingDiv.innerHTML = `<p>${response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</p>`;
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
@@ -764,3 +773,4 @@
     </script>
 </body>
 </html>
+
