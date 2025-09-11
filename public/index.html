@@ -715,8 +715,24 @@
              resultDiv.classList.add('hidden');
              
              const a = state.analyzer;
+             if (!a || !a.dealDateSpotRate) {
+                resultDiv.innerHTML = "Please run the 'Analyze Past Performance' calculation first.";
+                resultDiv.classList.remove('hidden');
+                btn.innerHTML = `✨ Get AI Performance Review`;
+                btn.disabled = false;
+                return;
+             }
+             
+             const actualProfit = (a.amount * a.actualRate) - a.cost;
+             const hedgedProfit = (a.amount * a.dealDateForwardRate) - a.cost;
+
              const systemPrompt = "You are a senior corporate treasurer reviewing a completed, unhedged forex deal. Based on the data, provide a concise, 2-3 bullet point summary analyzing the financial consequence of the decision to not hedge and give a forward-looking recommendation. Use markdown for formatting, like `**` for bold text. Keep the total response under 10 lines.";
-             const userPrompt = `I had an export deal of ${a.fcy} ${a.amount.toLocaleString()} with a cost of ${a.lcy} ${a.cost.toLocaleString()}. On the deal date of ${a.dealDate}, the spot rate was ${a.dealDateSpotRate.toFixed(4)} and a forward was available at ${a.dealDateForwardRate.toFixed(4)}. The actual spot rate on the payment date of ${a.paymentDate} turned out to be ${a.actualRate}. Please analyze the performance of my unhedged strategy.`;
+             
+             // MODIFIED: This prompt is now much more detailed and provides full context to the AI.
+             const userPrompt = `I am reviewing a completed ${document.getElementById('sim-deal-type').value} deal of ${a.fcy} ${a.amount.toLocaleString()} with a cost of ${a.lcy} ${a.cost.toLocaleString()}.
+On the deal date (${a.dealDate}), the spot rate was ${a.dealDateSpotRate.toFixed(4)} and a forward contract was available at ${a.dealDateForwardRate.toFixed(4)}. Hedging would have resulted in a guaranteed profit of ${a.lcy} ${hedgedProfit.toLocaleString('en-IN', {maximumFractionDigits: 0})}.
+The deal was left unhedged. On the payment date (${a.paymentDate}), the actual settlement spot rate was ${a.actualRate}, which resulted in an actual profit of ${a.lcy} ${actualProfit.toLocaleString('en-IN', {maximumFractionDigits: 0})}.
+Please analyze the financial outcome and the performance of my unhedged strategy.`;
              
              const insight = await callGeminiAPI(systemPrompt, userPrompt);
              resultDiv.innerHTML = insight.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
